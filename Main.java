@@ -53,13 +53,13 @@ public class Main {
         int i = 0;
         while (i < input.length()) {
             char now = input.charAt(i);
-
+            //for space
             if (now == ' ') {
                 i++;
                 continue;
             }
 
-            // Parse numbers
+           //for numbers
             if (Character.isDigit(now) || now == '.') {
                 int start = i;
                 while (i < input.length() && (Character.isDigit(input.charAt(i)) || input.charAt(i) == '.')) {
@@ -70,7 +70,7 @@ public class Main {
                 continue;
             }
 
-            // Handle parentheses
+            //for brackets
             if (now == '(') {
                 int bracketCount = 1;
                 int start = i + 1;
@@ -91,7 +91,7 @@ public class Main {
             }
             i++;
         }
-
+        //performing operations
         while (!operators.isEmpty()) {
             performOperation(values, operators.pop());
         }
@@ -100,10 +100,6 @@ public class Main {
     }
 
     private static void performOperation(Stack<Double> values, Operations op) {
-        if (values.size() < 2) {
-            throw new IllegalArgumentException("Invalid expression.");
-        }
-
         double b = values.pop();
         double a = values.pop();
         double result;
@@ -126,16 +122,31 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         Main calculator = new Main();
 
-        System.out.print("Enter a mathematical expression: ");
-        String input = sc.nextLine();
+        while (true) {
+            System.out.print("Enter a mathematical expression (or type 'exit' to quit): ");
+            String input = sc.nextLine();
 
-        try {
-            double result = calculator.evaluate(input);
-            System.out.println("Result: " + result);
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-        } finally {
-            sc.close();
+            if (input.equalsIgnoreCase("exit")) {
+                break;
+            }
+
+            try {
+                if (input.matches(".*[a-zA-Z].*")) {
+                    throw new IllegalArgumentException("Alphabetical characters are not allowed in the expression.");
+                }
+                double result = calculator.evaluate(input);
+                System.out.println("Result: " + result);
+            } catch (ArithmeticException e) {
+                System.out.println("Math Error: " + e.getMessage());
+            } catch (IllegalArgumentException e) {
+                System.out.println("Input Error: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Error: Invalid expression.");
+            }
         }
+
+        sc.close();
     }
+
+
 }
